@@ -13,6 +13,18 @@ func main() {
 	for i := range ch {
 		fmt.Println(i)
 	}
+	// selectOne
+	fmt.Println("SelectOne")
+	data := make(chan int)
+	exit := make(chan int)
+
+	go func() {
+		for i := 0; i < 10; i++ {
+			fmt.Println(<-data)
+		}
+		exit <- 0
+	}()
+	selectOne(data, exit)
 
 	fmt.Println("End Main stream")
 }
@@ -32,4 +44,17 @@ func sayHello(ch chan int) {
 	}
 	fmt.Println("func sayHello ends")
 	close(ch)
+}
+
+func selectOne(data, exit chan int) {
+	x := 0
+	for {
+		select {
+		case data <- x:
+			x += 1
+		case <-exit:
+			fmt.Println("selectOne exit!")
+			return
+		}
+	}
 }

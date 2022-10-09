@@ -1,6 +1,18 @@
 package main
 
-import "testing"
+import (
+	"fmt"
+	"os"
+	"testing"
+)
+
+func TestMain(m *testing.M) {
+	fmt.Println("setup")
+	res := m.Run()
+	fmt.Println("ter-down")
+
+	os.Exit(res)
+}
 
 func TestMult(t *testing.T) {
 	t.Run("simple", func(t *testing.T) {

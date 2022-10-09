@@ -1,4 +1,4 @@
-package main
+package functions_methods
 
 import "fmt"
 

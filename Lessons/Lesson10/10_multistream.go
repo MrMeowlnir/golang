@@ -29,6 +29,23 @@ func main() {
 	for i := 0; i < 1000; i++ {
 		go c.Inc(key)
 	}
-	time.Sleep(3 * time.Second)
+	time.Sleep(1 * time.Second)
 	fmt.Println(c.Value(key))
+
+	// waitgroup
+	var wg sync.WaitGroup
+
+	for i := 0; i < 10; i++ {
+		wg.Add(1)
+		n := i
+		go func() {
+			defer wg.Done()
+			fmt.Printf("%d goroutine working...\n", n)
+			time.Sleep(300 * time.Millisecond)
+		}()
+	}
+
+	wg.Wait()
+	fmt.Println("All done")
+
 }

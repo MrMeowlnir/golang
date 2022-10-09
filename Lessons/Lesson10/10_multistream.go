@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -34,18 +35,21 @@ func main() {
 
 	// waitgroup
 	var wg sync.WaitGroup
+	var counter uint64
 
 	for i := 0; i < 10; i++ {
 		wg.Add(1)
 		n := i
 		go func() {
 			defer wg.Done()
+			for j := 0; j < 1000; j++ {
+				atomic.AddUint64(&counter, 1)
+			}
 			fmt.Printf("%d goroutine working...\n", n)
 			time.Sleep(300 * time.Millisecond)
 		}()
 	}
 
 	wg.Wait()
-	fmt.Println("All done")
-
+	fmt.Printf("All done. Counter = %d\n", counter)
 }

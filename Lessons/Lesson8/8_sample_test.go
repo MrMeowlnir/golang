@@ -4,6 +4,8 @@ import "testing"
 
 func TestMult(t *testing.T) {
 	t.Run("simple", func(t *testing.T) {
+		t.Parallel()
+		t.Log("simple")
 		var a, b, result int = 2, 2, 4
 
 		realResult := Mult(a, b)
@@ -14,6 +16,8 @@ func TestMult(t *testing.T) {
 	})
 
 	t.Run("medium", func(t *testing.T) {
+		t.Parallel()
+		t.Log("medium")
 		var a, b, result int = 222, 222, 49284
 
 		realResult := Mult(a, b)
@@ -24,6 +28,8 @@ func TestMult(t *testing.T) {
 	})
 
 	t.Run("negative", func(t *testing.T) {
+		t.Parallel()
+		t.Log("negative")
 		var a, b, result int = -2, 4, -8
 
 		realResult := Mult(a, b)

@@ -1,24 +1,29 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net"
 	"net/http"
 	"time"
 
+	"Rest-Api/internal/user"
+
 	"github.com/julienschmidt/httprouter"
 )
 
-func IndexHandler(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	name := params.ByName("name")
-	w.Write([]byte(fmt.Sprintf("Hello %s", name)))
+func main() {
+	log.Println("Create Router")
+	router := httprouter.New()
+
+	log.Println("Register New Handler")
+	handler := user.NewHandler()
+	handler.Register(router)
+
+	start(router)
 }
 
-func main() {
-	router := httprouter.New()
-	router.GET("/:name", IndexHandler)
-
+func start(router *httprouter.Router) {
+	log.Println("Start Application")
 	listener, err := net.Listen("tcp", ":1234")
 	if err != nil {
 		panic(err)

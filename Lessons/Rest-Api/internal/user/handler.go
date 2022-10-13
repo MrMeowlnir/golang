@@ -32,25 +32,31 @@ func (h *handler) Register(router *httprouter.Router) {
 }
 
 func (h *handler) GetUsersList(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	w.WriteHeader(200)
 	w.Write([]byte("Users List")) // empty block. "WIP"
 }
 
 func (h *handler) GetUserByUUID(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	w.WriteHeader(200)
 	w.Write([]byte("Get User By UUID")) // empty block. "WIP"
 }
 
 func (h *handler) CreateUser(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	w.WriteHeader(201)
 	w.Write([]byte("Create User")) // empty block. "WIP"
 }
 
 func (h *handler) UpdateUser(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	w.WriteHeader(204)
 	w.Write([]byte("Update User")) // empty block. "WIP"
 }
 
 func (h *handler) PartUpdateUser(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	w.WriteHeader(204)
 	w.Write([]byte("Partially Update User")) // empty block. "WIP"
 }
 
 func (h *handler) DeleteUser(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	w.WriteHeader(204)
 	w.Write([]byte("Delete User")) // empty block. "WIP"
 }

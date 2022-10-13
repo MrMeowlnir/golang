@@ -17,7 +17,7 @@ func main() {
 	router := httprouter.New()
 
 	logger.Info("Register New Handler")
-	handler := user.NewHandler()
+	handler := user.NewHandler(logger)
 	handler.Register(router)
 
 	start(router)

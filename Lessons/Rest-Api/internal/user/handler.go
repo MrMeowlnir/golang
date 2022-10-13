@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"Rest-Api/internal/handlers"
+	"Rest-Api/pkg/logging"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -16,10 +17,13 @@ const (
 )
 
 type handler struct {
+	logger logging.Logger
 }
 
-func NewHandler() handlers.Handler {
-	return &handler{}
+func NewHandler(logger logging.Logger) handlers.Handler {
+	return &handler{
+		logger: logger,
+	}
 }
 
 func (h *handler) Register(router *httprouter.Router) {

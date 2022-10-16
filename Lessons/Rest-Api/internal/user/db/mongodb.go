@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 type db struct {
@@ -30,9 +31,22 @@ func (d *db) Create(ctx context.Context, user user.User) (string, error) {
 	}
 }
 
-func (d *db) FindOne(ctx context.Context, id string) (user.User, error) {
-	//TODO implement me
-	panic("implement me")
+func (d *db) FindOne(ctx context.Context, id string) (u user.User, err error) {
+	d.logger.Debug("find user")
+	oid, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return u, fmt.Errorf("failed to convert hex to ObjectID. hex: %s", id)
+	}
+	filter := bson.M{"_id": oid}
+	result := d.collection.FindOne(ctx, filter)
+	if result.Err() != nil {
+		// TODO 404
+		return u, fmt.Errorf("filed find user by ID: %s due to error: %s", id, result.Err())
+	}
+	if err := result.Decode(&u); err != nil {
+		return u, fmt.Errorf("failed to decode user from DB by ID: %s due to error: %s", id, err)
+	}
+	return u, nil
 }
 
 func (d *db) Update(ctx context.Context, user user.User) error {

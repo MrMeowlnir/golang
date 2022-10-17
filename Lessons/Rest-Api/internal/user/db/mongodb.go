@@ -46,7 +46,7 @@ func (d *db) FindOne(ctx context.Context, id string) (u user.User, err error) {
 			// TODO Error Entity not found
 			return u, fmt.Errorf("error: Entity Not Found")
 		}
-		return u, fmt.Errorf("filed find user by ID: %s due to error: %s", id, result.Err())
+		return u, fmt.Errorf("failed find user by ID: %s due to error: %s", id, result.Err())
 	}
 	if err := result.Decode(&u); err != nil {
 		return u, fmt.Errorf("failed to decode user from DB by ID: %s due to error: %s", id, err)
@@ -57,20 +57,20 @@ func (d *db) FindOne(ctx context.Context, id string) (u user.User, err error) {
 func (d *db) Update(ctx context.Context, user user.User) error {
 	objectID, err := primitive.ObjectIDFromHex(user.ID)
 	if err != nil {
-		return fmt.Errorf("filed convertion user.ID to objectID: %s", user.ID)
+		return fmt.Errorf("failed convertion user.ID to objectID: %s", user.ID)
 	}
 	filter := bson.M{"_id": objectID}
 
 	var userBytes []byte
 	userBytes, err = bson.Marshal(user)
 	if err != nil {
-		return fmt.Errorf("filed to marshal user due to error: %v", err)
+		return fmt.Errorf("failed to marshal user due to error: %v", err)
 	}
 
 	var updateUserObj bson.M
 	err = bson.Unmarshal(userBytes, &updateUserObj)
 	if err != nil {
-		return fmt.Errorf("filed to unmarshal userBytes due to error: %v", err)
+		return fmt.Errorf("failed to unmarshal userBytes due to error: %v", err)
 	}
 
 	delete(updateUserObj, "_id")
@@ -82,7 +82,7 @@ func (d *db) Update(ctx context.Context, user user.User) error {
 	var result *mongo.UpdateResult
 	result, err = d.collection.UpdateOne(ctx, filter, update)
 	if err != nil {
-		return fmt.Errorf("filed to Update user due to error: %v", err)
+		return fmt.Errorf("failed to Update user due to error: %v", err)
 	}
 	if result.MatchedCount == 0 {
 		// TODO errorentity not found 404
@@ -114,6 +114,23 @@ func (d *db) Delete(ctx context.Context, id string) error {
 	d.logger.Tracef("Deleted: %d docs;", result.DeletedCount)
 
 	return nil
+}
+
+func (d *db) FindAll(ctx context.Context) (u []user.User, err error) {
+	cursor, err := d.collection.Find(ctx, bson.M{})
+	if err != nil {
+		if errors.Is(cursor.Err(), mongo.ErrNoDocuments) {
+				// TODO Error Entity not found
+				return u, fmt.Errorf("error: Entity Not Found")
+		}
+		return u, fmt.Errorf("failed find all users due to error: %s", cursor.Err())
+	}
+
+	if err = cursor.All(ctx, &u); err != nil {
+		return u, fmt.Errorf("failed to decode all users from DB due to error: %s", err)
+	}
+
+	return u, nil
 }
 
 func NewStorage(database *mongo.Database, collection string, logger *logging.Logger) user.Storage {

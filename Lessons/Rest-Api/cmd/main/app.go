@@ -33,6 +33,13 @@ func main() {
 	}
 	storage := db.NewStorage(mongoDBClient, cfg.MongoDB.Collection, logger)
 
+
+	users, err := storage.FindAll(context.Background())
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(users)
+
 	user1 := user.User{
 		ID:           "",
 		Email:        "mrmeowlnir@valhall.la",
@@ -57,6 +64,12 @@ func main() {
 	}
 	logger.Info(user2ID)
 
+	users, err = storage.FindAll(context.Background())
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(users)
+
 	user2Found, err := storage.FindOne(context.Background(), user2ID)
 	if err != nil {
 		panic(err)
@@ -69,7 +82,24 @@ func main() {
 		panic(err)
 	}
 
+	user2Found, err = storage.FindOne(context.Background(), user2ID)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(user2Found)
+
 	err = storage.Delete(context.Background(), user2ID)
+	if err != nil {
+		panic(err)
+	}
+
+	users, err = storage.FindAll(context.Background())
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(users)
+
+	_, err = storage.FindOne(context.Background(), user2ID)
 	if err != nil {
 		panic(err)
 	}

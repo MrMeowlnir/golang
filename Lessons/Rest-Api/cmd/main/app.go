@@ -99,11 +99,6 @@ func main() {
 	}
 	fmt.Println(users)
 
-	_, err = storage.FindOne(context.Background(), user2ID)
-	if err != nil {
-		panic(err)
-	}
-
 	logger.Info("Register New Handler")
 	handler := user.NewHandler(logger)
 	handler.Register(router)

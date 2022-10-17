@@ -95,8 +95,25 @@ func (d *db) Update(ctx context.Context, user user.User) error {
 }
 
 func (d *db) Delete(ctx context.Context, id string) error {
-	//TODO implement me
-	panic("implement me")
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return fmt.Errorf("failed convertion id to objectID: %s", id)
+	}
+	filter := bson.M{"_id": objectID}
+
+	result, err := d.collection.DeleteOne(ctx, filter)
+	if err != nil {
+		return fmt.Errorf("failed to execute query due to error: %v", err)
+	}
+
+	if result.DeletedCount == 0 {
+		// TODO errorentity not found 404
+		return fmt.Errorf("not found")
+	}
+
+	d.logger.Tracef("Deleted: %d docs;", result.DeletedCount)
+
+	return nil
 }
 
 func NewStorage(database *mongo.Database, collection string, logger *logging.Logger) user.Storage {

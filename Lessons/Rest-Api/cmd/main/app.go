@@ -2,6 +2,9 @@ package main
 
 import (
 	"Rest-Api/internal/config"
+	"Rest-Api/internal/user/db"
+	"Rest-Api/pkg/client/mongodb"
+	"context"
 	"fmt"
 	"net"
 	"net/http"
@@ -22,6 +25,28 @@ func main() {
 	router := httprouter.New()
 
 	cfg := config.GetConfig()
+
+	mongoDBClient, err := mongodb.NewCient(context.Background(), cfg.MongoDB.Host, cfg.MongoDB.Port,
+		cfg.MongoDB.Username, cfg.MongoDB.Password, cfg.MongoDB.Database, cfg.MongoDB.AuthDB)
+	if err != nil {
+		panic(err)
+	}
+	storage := db.NewStorage(mongoDBClient, cfg.MongoDB.Collection, logger)
+
+	user1 := user.User{
+		ID:           "",
+		Email:        "mr@meowlnir.val",
+		Username:     "MrMeowlnir",
+		PasswordHash: "123456",
+	}
+
+	user1ID, err := storage.Create(context.Background(), user1)
+	if err != nil {
+		panic(err)
+	}
+	logger.Info(user1ID)
+
+
 
 	logger.Info("Register New Handler")
 	handler := user.NewHandler(logger)

@@ -4,6 +4,7 @@ import (
 	"Rest-Api/internal/user"
 	"Rest-Api/pkg/logging"
 	"context"
+	"errors"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -38,9 +39,13 @@ func (d *db) FindOne(ctx context.Context, id string) (u user.User, err error) {
 		return u, fmt.Errorf("failed to convert hex to ObjectID. hex: %s", id)
 	}
 	filter := bson.M{"_id": oid}
+	
 	result := d.collection.FindOne(ctx, filter)
 	if result.Err() != nil {
-		// TODO 404
+		if errors.Is(result.Err(), mongo.ErrNoDocuments){
+			// TODO Error Entity not found
+			return u, fmt.Errorf("error: Entity Not Found")
+		}
 		return u, fmt.Errorf("filed find user by ID: %s due to error: %s", id, result.Err())
 	}
 	if err := result.Decode(&u); err != nil {
@@ -56,7 +61,8 @@ func (d *db) Update(ctx context.Context, user user.User) error {
 	}
 	filter := bson.M{"_id": objectID}
 
-	userBytes, err := bson.Marshal(user)
+	var userBytes []byte
+	userBytes, err = bson.Marshal(user)
 	if err != nil {
 		return fmt.Errorf("filed to marshal user due to error: %v", err)
 	}
@@ -73,7 +79,8 @@ func (d *db) Update(ctx context.Context, user user.User) error {
 		"$set": updateUserObj,
 	}
 
-	result, err := d.collection.UpdateOne(ctx, filter, update)
+	var result *mongo.UpdateResult
+	result, err = d.collection.UpdateOne(ctx, filter, update)
 	if err != nil {
 		return fmt.Errorf("filed to Update user due to error: %v", err)
 	}

@@ -4,6 +4,10 @@ import (
 	"encoding/json"
 )
 
+var (
+	ErrNotFound = NewAppError( nil, "not found", "", "US-000003")
+)
+
 type AppError struct {
 	Err 				error 	`json:"-"`
 	Message 			string	`json:"message"`
@@ -35,4 +39,3 @@ func NewAppError(err error, message, developerMessage, code string) *AppError {
 		Code:             code,
 	}
 }
-

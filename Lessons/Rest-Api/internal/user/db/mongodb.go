@@ -1,6 +1,7 @@
 package db
 
 import (
+	"Rest-Api/internal/apperror"
 	"Rest-Api/internal/user"
 	"Rest-Api/pkg/logging"
 	"context"
@@ -43,8 +44,7 @@ func (d *db) FindOne(ctx context.Context, id string) (u user.User, err error) {
 	result := d.collection.FindOne(ctx, filter)
 	if result.Err() != nil {
 		if errors.Is(result.Err(), mongo.ErrNoDocuments){
-			// TODO Error Entity not found
-			return u, fmt.Errorf("error: Entity Not Found")
+			return u, apperror.ErrNotFound
 		}
 		return u, fmt.Errorf("failed find user by ID: %s due to error: %s", id, result.Err())
 	}
@@ -85,8 +85,7 @@ func (d *db) Update(ctx context.Context, user user.User) error {
 		return fmt.Errorf("failed to Update user due to error: %v", err)
 	}
 	if result.MatchedCount == 0 {
-		// TODO errorentity not found 404
-		return fmt.Errorf("not found")
+		return apperror.ErrNotFound
 	}
 
 	d.logger.Tracef("Matched %d docs; Modified: %d docs;", result.MatchedCount, result.ModifiedCount)
@@ -107,8 +106,7 @@ func (d *db) Delete(ctx context.Context, id string) error {
 	}
 
 	if result.DeletedCount == 0 {
-		// TODO errorentity not found 404
-		return fmt.Errorf("not found")
+		return apperror.ErrNotFound
 	}
 
 	d.logger.Tracef("Deleted: %d docs;", result.DeletedCount)
@@ -120,8 +118,7 @@ func (d *db) FindAll(ctx context.Context) (u []user.User, err error) {
 	cursor, err := d.collection.Find(ctx, bson.M{})
 	if err != nil {
 		if errors.Is(cursor.Err(), mongo.ErrNoDocuments) {
-				// TODO Error Entity not found
-				return u, fmt.Errorf("error: Entity Not Found")
+			return u, apperror.ErrNotFound
 		}
 		return u, fmt.Errorf("failed find all users due to error: %s", cursor.Err())
 	}

@@ -2,9 +2,9 @@ package main
 
 import (
 	"Rest-Api/internal/config"
-	"Rest-Api/internal/user/db"
-	"Rest-Api/pkg/client/mongodb"
-	"context"
+//	"Rest-Api/internal/user/db"
+//	"Rest-Api/pkg/client/mongodb"
+//	"context"
 	"fmt"
 	"net"
 	"net/http"
@@ -26,78 +26,78 @@ func main() {
 
 	cfg := config.GetConfig()
 
-	mongoDBClient, err := mongodb.NewCient(context.Background(), cfg.MongoDB.Host, cfg.MongoDB.Port,
-		cfg.MongoDB.Username, cfg.MongoDB.Password, cfg.MongoDB.Database, cfg.MongoDB.AuthDB)
-	if err != nil {
-		panic(err)
-	}
-	storage := db.NewStorage(mongoDBClient, cfg.MongoDB.Collection, logger)
-
-
-	users, err := storage.FindAll(context.Background())
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(users)
-
-	user1 := user.User{
-		ID:           "",
-		Email:        "mrmeowlnir@valhall.la",
-		Username:     "MrMeowlnir",
-		PasswordHash: "123456",
-	}
-	user1ID, err := storage.Create(context.Background(), user1)
-	if err != nil {
-		panic(err)
-	}
-	logger.Info(user1ID)
-
-	user2 := user.User{
-		ID:           "",
-		Email:        "2mrmeowlnir@valhall.la",
-		Username:     "2MrMeowlnir",
-		PasswordHash: "222222",
-		}
-	user2ID, err := storage.Create(context.Background(), user2)
-	if err != nil {
-		panic(err)
-	}
-	logger.Info(user2ID)
-
-	users, err = storage.FindAll(context.Background())
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(users)
-
-	user2Found, err := storage.FindOne(context.Background(), user2ID)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(user2Found)
-
-	user2Found.Email = "newEmailuser2@valhall.la"
-	err = storage.Update(context.Background(), user2Found)
-	if err != nil {
-		panic(err)
-	}
-
-	user2Found, err = storage.FindOne(context.Background(), user2ID)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(user2Found)
-
-	err = storage.Delete(context.Background(), user2ID)
-	if err != nil {
-		panic(err)
-	}
-
-	users, err = storage.FindAll(context.Background())
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(users)
+//	mongoDBClient, err := mongodb.NewCient(context.Background(), cfg.MongoDB.Host, cfg.MongoDB.Port,
+//		cfg.MongoDB.Username, cfg.MongoDB.Password, cfg.MongoDB.Database, cfg.MongoDB.AuthDB)
+//	if err != nil {
+//		panic(err)
+//	}
+//	storage := db.NewStorage(mongoDBClient, cfg.MongoDB.Collection, logger)
+//
+//
+//	users, err := storage.FindAll(context.Background())
+//	if err != nil {
+//		panic(err)
+//	}
+//	fmt.Println(users)
+//
+//	user1 := user.User{
+//		ID:           "",
+//		Email:        "mrmeowlnir@valhall.la",
+//		Username:     "MrMeowlnir",
+//		PasswordHash: "123456",
+//	}
+//	user1ID, err := storage.Create(context.Background(), user1)
+//	if err != nil {
+//		panic(err)
+//	}
+//	logger.Info(user1ID)
+//
+//	user2 := user.User{
+//		ID:           "",
+//		Email:        "2mrmeowlnir@valhall.la",
+//		Username:     "2MrMeowlnir",
+//		PasswordHash: "222222",
+//		}
+//	user2ID, err := storage.Create(context.Background(), user2)
+//	if err != nil {
+//		panic(err)
+//	}
+//	logger.Info(user2ID)
+//
+//	users, err = storage.FindAll(context.Background())
+//	if err != nil {
+//		panic(err)
+//	}
+//	fmt.Println(users)
+//
+//	user2Found, err := storage.FindOne(context.Background(), user2ID)
+//	if err != nil {
+//		panic(err)
+//	}
+//	fmt.Println(user2Found)
+//
+//	user2Found.Email = "newEmailuser2@valhall.la"
+//	err = storage.Update(context.Background(), user2Found)
+//	if err != nil {
+//		panic(err)
+//	}
+//
+//	user2Found, err = storage.FindOne(context.Background(), user2ID)
+//	if err != nil {
+//		panic(err)
+//	}
+//	fmt.Println(user2Found)
+//
+//	err = storage.Delete(context.Background(), user2ID)
+//	if err != nil {
+//		panic(err)
+//	}
+//
+//	users, err = storage.FindAll(context.Background())
+//	if err != nil {
+//		panic(err)
+//	}
+//	fmt.Println(users)
 
 	logger.Info("Register New Handler")
 	handler := user.NewHandler(logger)

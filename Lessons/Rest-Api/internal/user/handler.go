@@ -2,6 +2,7 @@ package user
 
 import (
 	"Rest-Api/internal/apperror"
+	"fmt"
 	"net/http"
 
 	"Rest-Api/internal/handlers"
@@ -37,21 +38,21 @@ func (h *handler) Register(router *httprouter.Router) {
 }
 
 func (h *handler) GetUsersList(w http.ResponseWriter, r *http.Request) error {
-	w.WriteHeader(200)
-	w.Write([]byte("Users List")) // empty block. "WIP"
-	return nil
+//	w.WriteHeader(200)
+//	w.Write([]byte("Users List")) // empty block. "WIP"
+	return apperror.ErrNotFound
 }
 
 func (h *handler) GetUserByUUID(w http.ResponseWriter, r *http.Request) error {
-	w.WriteHeader(200)
-	w.Write([]byte("Get User By UUID")) // empty block. "WIP"
-	return nil
+//	w.WriteHeader(200)
+//	w.Write([]byte("Get User By UUID")) // empty block. "WIP"
+	return fmt.Errorf("this is API error")
 }
 
 func (h *handler) CreateUser(w http.ResponseWriter, r *http.Request) error {
-	w.WriteHeader(201)
-	w.Write([]byte("Create User")) // empty block. "WIP"
-	return nil
+//	w.WriteHeader(201)
+//	w.Write([]byte("Create User")) // empty block. "WIP"
+	return apperror.NewAppError(nil, "test", "test", "t123")
 }
 
 func (h *handler) UpdateUser(w http.ResponseWriter, r *http.Request) error {

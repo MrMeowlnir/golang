@@ -2,6 +2,7 @@ package vlc
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"unicode"
 	"unicode/utf8"
@@ -9,6 +10,8 @@ import (
 
 type binaryChunk string
 type binaryChunks []binaryChunk
+type hexChunk string
+type hexChunks []hexChunk
 type encodingTable map[rune]string
 
 const chunkSize = 8
@@ -20,9 +23,32 @@ func Execute(str string) string {
 	// split binary by chanks (8): bits to bytes -> 0111000 00001111 ...Execute
 	chunks := splitByChunks(bStr, chunkSize)
 	// bytes to hex: 00001111 11110000 -> 0A A0
+	chunks.ToHex()
 
 	fmt.Println(chunks)
 	return ""
+}
+
+func (bcs binaryChunks) ToHex() hexChunks {
+
+	res := make(hexChunks, 0, len(bcs))
+	for _, ch := range bcs {
+		res = append(res, ch.ToHex())
+	}
+	return res
+}
+
+func (bc binaryChunk) ToHex() hexChunk {
+	num, err := strconv.ParseInt(string(bc), 2, chunkSize)
+	if err != nil {
+		panic("can't parse binary chunk: " + err.Error())
+	}
+	res := hexChunk(strings.ToUpper(fmt.Sprintf("%x", num)))
+
+	if len(res) == 1 { 
+		res = "0" + res
+	}
+	return res
 }
 
 // prepareText prepares text to be fit for encode:

@@ -1,6 +1,9 @@
 package vlc
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func Test_splitByChunks(t *testing.T) {
 	type args struct {
@@ -22,10 +25,8 @@ func Test_splitByChunks(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			for i, got := range splitByChunks(tt.args.bStr, tt.args.chunkSize) {
-				if got != tt.want[i] {
-					t.Errorf("splitByChunks(). Chunk N#{i}: got - #{got}, want - #{tt.want[i]}")
-				}
+			if got:=splitByChunks(tt.args.bStr, tt.args.chunkSize); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("binaryChunks.ToHex()=%v, want - %v", got, tt.want)
 			}
 		})
 	}

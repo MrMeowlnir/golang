@@ -2,7 +2,7 @@ package vlc
 
 import "testing"
 
-func Test_encodeBin(t *testing.T) {
+func Test_Execute(t *testing.T) {
 	tests := []struct {
 		name string
 		str  string
@@ -10,15 +10,15 @@ func Test_encodeBin(t *testing.T) {
 	}{
 		{
 			name: "base test",
-			str:  "!my name",
-			want: "00100000001100000011110000011000011101",
-			},
-			}
-			for _, tt := range tests {
-				t.Run(tt.name, func(t *testing.T) {
-					if got := encodeBin(tt.str); got != tt.want {
-						t.Errorf("encodeBin() = #{got}, want #{tt.want}")
-					}
-				})
-			}
+			str:  "My name is World",
+			want: "20 30 3C 18 77 4A E4 03 8A 09 28",
+		},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				if got := Execute(tt.str); got != tt.want {
+					t.Errorf("Execute() = %s, want %s", got, tt.want)
+				}
+			})
+		}
 }

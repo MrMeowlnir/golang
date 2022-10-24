@@ -26,7 +26,7 @@ func Test_splitByChunks(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got:=splitByChunks(tt.args.bStr, tt.args.chunkSize); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("binaryChunks.ToHex()=%v, want - %v", got, tt.want)
+				t.Errorf("binaryChunks.ToHex(%s, %d) = %v, want %v", tt.args.bStr, tt.args.chunkSize, got, tt.want)
 			}
 		})
 	}

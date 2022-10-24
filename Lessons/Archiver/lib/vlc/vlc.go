@@ -22,11 +22,28 @@ func Execute(str string) string {
 	bStr := encodeBin(prepStr)
 	// split binary by chanks (8): bits to bytes -> 0111000 00001111 ...Execute
 	chunks := splitByChunks(bStr, chunkSize)
-	// bytes to hex: 00001111 11110000 -> 0A A0
-	chunks.ToHex()
+	// bytes to hex: 00001111 11110000 -> 0F F0 (return string)
+	return chunks.ToHex().ToString()
+}
 
-	fmt.Println(chunks)
-	return ""
+func (hcs hexChunks) ToString() string {
+	const sep = " "
+
+	switch len(hcs) {
+	case 0:
+		return ""
+	case 1:
+		return string(hcs[0])
+	}
+
+	var buf strings.Builder
+
+	buf.WriteString(string(hcs[0]))
+	for _, hc := range hcs[1:] {
+		buf.WriteString(sep)
+		buf.WriteString(string(hc))
+	}
+	return buf.String()
 }
 
 func (bcs binaryChunks) ToHex() hexChunks {
@@ -39,7 +56,7 @@ func (bcs binaryChunks) ToHex() hexChunks {
 }
 
 func (bc binaryChunk) ToHex() hexChunk {
-	num, err := strconv.ParseInt(string(bc), 2, chunkSize)
+	num, err := strconv.ParseUint(string(bc), 2, chunkSize)
 	if err != nil {
 		panic("can't parse binary chunk: " + err.Error())
 	}

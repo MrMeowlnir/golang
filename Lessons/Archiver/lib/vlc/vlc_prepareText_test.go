@@ -17,7 +17,7 @@ func Test_prepareText(t *testing.T) {
 			for _, tt := range tests {
 				t.Run(tt.name, func(t *testing.T) {
 					if got := prepareText(tt.str); got != tt.want {
-						t.Errorf("prepareText() = #{got}, want #{tt.want}")
+						t.Errorf("prepareText(%s) = %s, want %s", tt.str, got, tt.want)
 					}
 				})
 			}

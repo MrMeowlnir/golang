@@ -8,6 +8,7 @@ import (
 )
 
 type binaryChunk string
+type binaryChunks []binaryChunk
 type encodingTable map[rune]string
 
 const chunkSize = 8
@@ -54,13 +55,13 @@ func encodeBin(str string) string {
 
 //splitByChunks function splits source bitSting by chunks with given size
 // i.g. '0000111111110000' -> '00001111 11110000'
-func splitByChunks(bStr string, chunkSize int) []binaryChunk {
+func splitByChunks(bStr string, chunkSize int) binaryChunks {
 	strLen := utf8.RuneCountInString(bStr)
 	chunksCount := strLen / chunkSize
 	if strLen%chunkSize!=0{
 		chunksCount++
 	}
-	res := make([]binaryChunk, 0, chunksCount)
+	res := make(binaryChunks, 0, chunksCount)
 
 	var buf strings.Builder
 

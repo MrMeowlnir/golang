@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/spf13/cobra"
-	"io/ioutil"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -30,15 +30,16 @@ func pack(_ *cobra.Command, args []string)  {
 	if err != nil {
 		handleErr(err)
 	}
+	defer r.Close()
 
-	data, err := ioutil.ReadAll(r)
+	data, err := io.ReadAll(r)
 	if err != nil {
 		handleErr(err)
 	}
 
 	packed := "" + string(data) // TODO: logic
 	fmt.Println(packed)
-	err = ioutil.WriteFile(packedFileName(filePath), []byte(packed), 0644)
+	err = os.WriteFile(packedFileName(filePath), []byte(packed), 0644)
 	if err != nil {
 		handleErr(err)
 	}
